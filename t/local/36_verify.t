@@ -116,7 +116,12 @@ sub test_policy_checks
 	print "connect failed: $ret: " . Net::SSLeay::print_errs() . "\n" unless $ret == 1;
     } else {
 	isnt($ret, 1, 'connect not ok: policy checks must fail') if !$ok;
-	is($verify_result, Net::SSLeay::X509_V_ERR_NO_EXPLICIT_POLICY(), 'Verify result is X509_V_ERR_NO_EXPLICIT_POLICY');
+	if ($verify_result == Net::SSLeay::X509_V_ERR_UNSPECIFIED()) {
+	    # new verification with LibreSSL 3.2.2
+	    pass('Verify result is X509_V_ERR_UNSPECIFIED (LibreSSL)');
+	} else {
+	    is($verify_result, Net::SSLeay::X509_V_ERR_NO_EXPLICIT_POLICY(), 'Verify result is X509_V_ERR_NO_EXPLICIT_POLICY');
+	}
     }
 
     Net::SSLeay::X509_VERIFY_PARAM_free($pm);

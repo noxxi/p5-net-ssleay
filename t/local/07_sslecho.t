@@ -32,8 +32,17 @@ my $cert_sha1_fp = '9C:2E:90:B9:A7:84:7A:3A:2B:BE:FD:A5:D1:46:EA:31:75:E9:03:26'
 
 $ENV{RND_SEED} = '1234567890123456789012345678901234567890';
 
+my $enable_libressl_legacy_verify = sub {
+    my $ctx = shift;
+    Net::SSLeay::X509_VERIFY_PARAM_set_flags(
+	Net::SSLeay::CTX_get0_param($ctx),
+	0x400000 # X509_V_FLAG_LEGACY_VERIFY
+    );
+};
+
 {
     my $ctx = Net::SSLeay::CTX_new();
+    Net::SSLeay::CTX_set_options($ctx, &Net::SSLeay::OP_ALL | 0x20000000);
     ok($ctx, 'CTX_new');
     ok(Net::SSLeay::CTX_set_cipher_list($ctx, 'ALL'), 'CTX_set_cipher_list');
     my ($dummy, $errs) = Net::SSLeay::set_cert_and_key($ctx, $cert_pem, $key_pem);
@@ -143,10 +152,12 @@ my @results;
     my $verify_cb_3_called = 0;
     {
         my $ctx = Net::SSLeay::CTX_new();
+	$enable_libressl_legacy_verify->($ctx);
         push @results, [ Net::SSLeay::CTX_load_verify_locations($ctx, $ca_cert_pem, ''), 'CTX_load_verify_locations' ];
         Net::SSLeay::CTX_set_verify($ctx, &Net::SSLeay::VERIFY_PEER, \&verify);
 
         my $ctx2 = Net::SSLeay::CTX_new();
+	$enable_libressl_legacy_verify->($ctx2);
         Net::SSLeay::CTX_set_cert_verify_callback($ctx2, \&verify4, 1);
 
         {

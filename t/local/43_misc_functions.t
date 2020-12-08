@@ -39,6 +39,7 @@ our %tls_1_3_aead_cipher_to_keyblock_size = (
      # Only in TLS 1.3
      'TLS_AES_128_GCM_SHA256' => 56,
      'TLS_AES_256_GCM_SHA384' => 88,
+     'AEAD-AES256-GCM-SHA384' => 88, # LibreSSL 3.2.2 different name
      'TLS_CHACHA20_POLY1305_SHA256' => 88,
     );
 
@@ -103,7 +104,7 @@ sub client {
 
     my $cl = $server->connect();
     my $ctx = Net::SSLeay::CTX_new();
-    Net::SSLeay::CTX_set_options($ctx, &Net::SSLeay::OP_ALL);
+    Net::SSLeay::CTX_set_options($ctx, &Net::SSLeay::OP_ALL | 0x20000000);
     my $ssl = Net::SSLeay::new($ctx);
 
     Net::SSLeay::set_fd($ssl, $cl);
