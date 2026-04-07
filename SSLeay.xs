@@ -4632,6 +4632,7 @@ X509_get_subjectAltNames(cert)
                          count++;
                          PUSHs(sv_2mortal(newSViv(subjAltNameDN->type)));
                          PUSHs(sv_2mortal(newSVpv((buf), strlen((buf)))));
+                         OPENSSL_free(buf);
                          }
                          break;
 
