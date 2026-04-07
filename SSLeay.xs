@@ -2279,6 +2279,7 @@ X509 * find_issuer(X509 *cert,X509_STORE *store, STACK_OF(X509) *chain) {
 	    if ( X509_check_issued(sk_X509_value(chain,i),cert) == X509_V_OK ) {
 		TRACE(2,"found issuer in chain");
 		issuer = X509_dup(sk_X509_value(chain,i));
+		break;
 	    }
 	}
     }
