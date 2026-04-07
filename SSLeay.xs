@@ -8690,7 +8690,7 @@ SSL_CTX_set_alpn_protos(ctx,data=&PL_sv_undef)
         SV * data
     PREINIT:
         unsigned char *alpn_data;
-        unsigned char alpn_len;
+        int alpn_len;
 
     CODE:
         RETVAL = -1;
@@ -8714,7 +8714,7 @@ SSL_set_alpn_protos(ssl,data=&PL_sv_undef)
         SV * data
     PREINIT:
         unsigned char *alpn_data;
-        unsigned char alpn_len;
+        int alpn_len;
 
     CODE:
         RETVAL = -1;
