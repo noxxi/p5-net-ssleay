@@ -1626,6 +1626,7 @@ int alpn_select_cb_invoke(SSL *ssl, const unsigned char **out, unsigned char *ou
           alpn_len = strlen((const char*)alpn_data);
           if (alpn_len <= 255) {
             tmpsv = newSVpv((const char*)alpn_data, alpn_len);
+            cb_data_advanced_put(ssl, "alpn_select_cb!!last_selected", tmpsv);
             *out = (unsigned char *)SvPVX(tmpsv);
             *outlen = alpn_len;
           }
