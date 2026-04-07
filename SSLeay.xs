@@ -480,9 +480,13 @@ simple_cb_data_t* simple_cb_data_new(SV* func, SV* data)
     New(0, cb, 1, simple_cb_data_t);
     if (cb) {
         SvREFCNT_inc(func);
-        SvREFCNT_inc(data);
         cb->func = func;
-        cb->data = (data == &PL_sv_undef) ? NULL : data;
+        if (data != &PL_sv_undef) {
+            SvREFCNT_inc(data);
+            cb->data = data;
+        } else {
+            cb->data = NULL;
+        }
     }
     return cb;
 }
